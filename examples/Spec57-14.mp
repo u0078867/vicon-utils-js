@@ -1,0 +1,25 @@
+
+$Femur_Patella_x = 105.996
+$Femur_Patella_y = 232.893
+$Femur_Patella_z = 28.5513
+$Femur_Tibia_x = 183.655
+$Femur_Tibia_y = 264.579
+$Femur_Tibia_z = 274.098
+$Femur_Length = 77.4478
+$Femur_mF3_y = 78.0523
+$Femur_mF3_z = -26.2689
+$Femur_mF4_x = 84.2214
+$Femur_mF4_y = -19.5736
+$Femur_mF4_z = 14.0684
+$Patella_Length = 62.5614
+$Patella_mP3_y = 77.1865
+$Patella_mP3_z = -46.3306
+$Patella_mP4_x = 0.0310618
+$Patella_mP4_y = 71.0236
+$Patella_mP4_z = 20.5532
+$Tibia_Length = 79.4103
+$Tibia_mT3_y = 72.6506
+$Tibia_mT3_z = -17.5921
+$Tibia_mT4_x = 88.797
+$Tibia_mT4_y = -3.75681
+$Tibia_mT4_z = 20.5665
