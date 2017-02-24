@@ -59,7 +59,7 @@ public class Startup
                     }
                 }
             ),
-            getFrame = (Func<object,Task<object>>)(
+            getFrameWhenAvailable = (Func<object,Task<object>>)(
                 async (dynamic i) =>
                 {
                     //Console.Write( "Waiting for new frame ..." );
@@ -71,6 +71,16 @@ public class Startup
                     //Console.WriteLine();
                     //Console.WriteLine("New frame arrived");
                     return null;
+                }
+            ),
+            getFrameIfAvailable = (Func<object,Task<object>>)(
+                async (dynamic i) =>
+                {
+                    if( MyClient.GetFrame().Result == ViconDataStreamSDK.DotNET.Result.Success )
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             ),
             getFrameNumber = (Func<object,Task<object>>)(

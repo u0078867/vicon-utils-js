@@ -40,7 +40,7 @@ function ViconClientSync(pathViconDataStreamSDK) {
     var getData = () => {
         var preReturnFunc = () => {setTimeout(getData, this.Tc)};
         // Wait for new frame
-        this.client.getFrame(null, true);
+        this.client.getFrameWhenAvailable(null, true);
         // Get frame number
         var frameNumber = parseInt(this.client.getFrameNumber(null, true));
         if (this.markerNames == undefined) {
@@ -61,6 +61,7 @@ function ViconClientSync(pathViconDataStreamSDK) {
         var data = {};
         data.frameNumber = frameNumber;
         data.markerData = markerData;
+        data.from = 'Vicon';
         this.callback(data);
         preReturnFunc();
     };

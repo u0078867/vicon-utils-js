@@ -13,7 +13,7 @@ function ViconClientAsync(pathViconDataStreamSDK) {
     this.callback = ((data) => {});
 
     this.pathViconDataStreamSDK = pathViconDataStreamSDK;
-    this.Tc = 2;
+    this.Tc = 16;   // leave it like this, as for 60Hz (Vicon cannot go any faster in streaming data outside)
     this.viconModelName = undefined;
     this.markerNames = undefined;
 
@@ -70,11 +70,15 @@ function ViconClientAsync(pathViconDataStreamSDK) {
         };
         var getFrame = () => {
             return new Promise((resolve, reject) => {
-                this.client.getFrame(null, (err, res) => {
+                this.client.getFrameIfAvailable(null, (err, res) => {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(res);
+                        if (res) {
+                            resolve();
+                        } else {
+                            reject('No new frame');
+                        }
                     }
                 })
             })
@@ -107,10 +111,10 @@ function ViconClientAsync(pathViconDataStreamSDK) {
             frameNumber = parseInt(res);
             // Get markers
             if (this.markerNames == undefined) {
-                throw new Error('Marker names array is undefined')
+                throw 'Marker names array is undefined'
             }
             if (this.viconModelName == undefined) {
-                throw new Error('Subject name is undefined')
+                throw 'Subject name is undefined'
             }
         })
         .then(() => {
@@ -129,6 +133,7 @@ function ViconClientAsync(pathViconDataStreamSDK) {
             var data = {};
             data.frameNumber = frameNumber;
             data.markerData = markerData;
+            data.from = 'Vicon';
             this.callback(undefined, data);
             preReturnFunc();
         })
