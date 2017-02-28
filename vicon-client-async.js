@@ -11,6 +11,7 @@ function ViconClientAsync(pathViconDataStreamSDK) {
     this.client = undefined;
     this.listening = false;
     this.callback = ((data) => {});
+    this.type = 'ViconAsync';
 
     this.pathViconDataStreamSDK = pathViconDataStreamSDK;
     this.Tc = 16;   // leave it like this, as for 60Hz (Vicon cannot go any faster in streaming data outside)
@@ -29,7 +30,18 @@ function ViconClientAsync(pathViconDataStreamSDK) {
         var onError = (err) => {cb(err)}
         this.server = server || 'localhost';
         this.port = port || 801;
-        this.client = createViconClient(null, true);
+        var create = () => {
+            return new Promise((resolve, reject) => {
+                createViconClient(null, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        this.client = res;
+                        resolve(res);
+                    }
+                })
+            })
+        }
         var connect = (url) => {
             return new Promise((resolve, reject) => {
                 this.client.connect(url, (err, res) => {
@@ -52,7 +64,8 @@ function ViconClientAsync(pathViconDataStreamSDK) {
                 })
             })
         }
-        connect(this.server  + ':' + this.port)
+        create()
+        .then(() => connect(this.server  + ':' + this.port))
         .then(enableMarkerData)
         .then(() => cb())
         .catch(err => cb(err))

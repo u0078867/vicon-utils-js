@@ -5,7 +5,7 @@ var ViconClient = require('vicon-utils').ViconClientAsync;
 
 var client = new ViconClient("C:/Program Files/Vicon/DataStream SDK/Win64/dotNET/ViconDataStreamSDK_DotNET.dll");
 
-client.connect("localhost", 801, (err, res) => {
+client.connect('localhost', 801, function (err, res) {
     if (err) throw err;
     console.log('connected');
     client.setMarkerNames(['mT1','mT2']);
@@ -31,5 +31,5 @@ client.connect("localhost", 801, (err, res) => {
         client.stopListening();
         console.log('stopped listening');
     }, 6000)
-});
+})
 console.log('connecting');

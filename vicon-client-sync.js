@@ -11,6 +11,7 @@ function ViconClientSync(pathViconDataStreamSDK) {
     this.client = undefined;
     this.listening = false;
     this.callback = ((data) => {});
+    this.type = 'ViconSync';
 
     this.pathViconDataStreamSDK = pathViconDataStreamSDK;
     this.Tc = 2;

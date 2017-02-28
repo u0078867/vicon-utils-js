@@ -16,10 +16,9 @@ public class Startup
         //MyClient.SetStreamMode( ViconDataStreamSDK.DotNET.StreamMode.ServerPush );
 
         return new {
-            connect = (Func<object,Task<object>>)(
+            /*connect = (Func<object,Task<object>>)(
                 async (dynamic i) =>
                 {
-
                     string HostName = (string)i;
 
                     // Connect to a server
@@ -36,6 +35,29 @@ public class Startup
                     //Console.WriteLine();
                     //Console.WriteLine("Connected");
                     return true;
+                }
+            ),*/
+            connect = (Func<object,Task<object>>)(
+                async (dynamic i) =>
+                {
+                    return await Task.Run<object>(async () => {
+                        string HostName = (string)i;
+
+                        // Connect to a server
+                        //Console.Write( "Connecting to {0} ...", HostName);
+                        while( !MyClient.IsConnected().Connected )
+                        {
+                          // Direct connection
+                          MyClient.Connect( HostName );
+
+                          // Sleep a bit
+                          System.Threading.Thread.Sleep( 200 );
+                          //Console.Write( "." );
+                        }
+                        //Console.WriteLine();
+                        //Console.WriteLine("Connected");
+                        return true;
+                    });
                 }
             ),
             enableMarkerData = (Func<object,Task<object>>)(
