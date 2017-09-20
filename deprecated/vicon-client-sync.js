@@ -2,7 +2,7 @@
 var edge = require('edge');
 var path = require('path');
 
-function ViconClientSync(pathViconDataStreamSDK) {
+function ViconClientSync(pathViconDataStreamSDK, options) {
 
     // the properties initialized with undefined are necessary.
 
@@ -14,7 +14,7 @@ function ViconClientSync(pathViconDataStreamSDK) {
     this.type = 'ViconSync';
 
     this.pathViconDataStreamSDK = pathViconDataStreamSDK;
-    this.Tc = 2;
+    this.Tc = options.Tc || 20;
     this.viconModelName = undefined;
     this.markerNames = undefined;
 

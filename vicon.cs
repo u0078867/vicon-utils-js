@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using ViconDataStreamSDK.DotNET;
+using System.Collections.Generic;
 
 public class Startup
 {
@@ -158,11 +159,58 @@ public class Startup
                     //                   Output.Translation[ 2 ],
                     //                   Output.Occluded );
                     return new {
+                        label = MarkerName,
                         x = Output.Translation[ 0 ],
                         y = Output.Translation[ 1 ],
                         z = Output.Translation[ 2 ],
                         occluded = Output.Occluded,
                     };
+                }
+            ),
+            getAllMarkersGlobalTranslation = (Func<object,Task<object>>)(
+                async (dynamic i) =>
+                {
+
+                    List<dynamic> list = new List<dynamic>();
+
+                    uint SubjectCount = MyClient.GetSubjectCount().SubjectCount;
+                    //Console.WriteLine( "Subjects ({0}):", SubjectCount );
+                    for( uint SubjectIndex = 0 ; SubjectIndex < SubjectCount ; ++SubjectIndex )
+                    {
+                        //Console.WriteLine( "  Subject #{0}", SubjectIndex );
+
+                        // Get the subject name
+                        string SubjectName = MyClient.GetSubjectName( SubjectIndex ).SubjectName;
+
+                        // Count the number of markers
+                        uint MarkerCount = MyClient.GetMarkerCount( SubjectName ).MarkerCount;
+                        //Console.WriteLine( "    Markers ({0}):", MarkerCount );
+                        for( uint MarkerIndex = 0 ; MarkerIndex < MarkerCount ; ++MarkerIndex )
+                        {
+                            // Get the marker name
+                            string MarkerName = MyClient.GetMarkerName( SubjectName, MarkerIndex ).MarkerName;
+
+                            // Get the marker parent
+                            //string MarkerParentName = MyClient.GetMarkerParentName(SubjectName, MarkerName).SegmentName;
+
+                            // Get the global marker translation
+                            Output_GetMarkerGlobalTranslation Output =
+                              MyClient.GetMarkerGlobalTranslation( SubjectName, MarkerName );
+
+                            dynamic MarkerData = new {
+                                label = MarkerName,
+                                x = Output.Translation[ 0 ],
+                                y = Output.Translation[ 1 ],
+                                z = Output.Translation[ 2 ],
+                                occluded = Output.Occluded,
+                            };
+
+                            list.Add(MarkerData);
+
+                        }
+                    }
+                    dynamic [] terms = list.ToArray();
+                    return terms;
                 }
             ),
         };

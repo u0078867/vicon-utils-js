@@ -3,8 +3,13 @@ var fs = require('fs');
 var path = require('path');
 var ViconClient = require('vicon-utils').ViconClientAsync;
 
-var client = new ViconClient("C:/Program Files/Vicon/DataStream SDK/Win64/dotNET/ViconDataStreamSDK_DotNET.dll");
+var client = new ViconClient("C:/Program Files/Vicon/DataStream SDK/Win64/dotNET/ViconDataStreamSDK_DotNET.dll", {
+    Tc: 16,
+    filterMarkers: false,
+    dataPollType: 'interval',
+});
 
+console.log('connecting ...');
 client.connect('localhost', 801, function (err, res) {
     if (err) throw err;
     console.log('connected');
@@ -32,4 +37,3 @@ client.connect('localhost', 801, function (err, res) {
         console.log('stopped listening');
     }, 6000)
 })
-console.log('connecting');
