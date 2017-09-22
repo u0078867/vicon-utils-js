@@ -25,6 +25,23 @@ var msgStop = '\
 </CaptureStop>\n\0\
 ';
 
+/* NOTE:
+Nexus does not like at all UDP packages with the same ID, so an incremental
+number has to be provided. The best way is to be able to instantiate the class
+with a default number (to be later incremented by start/stop packages) tha is
+already different than all the possible ones used before. Than a good thing
+would be to have this number proportional to the current time. However, using
+barely Date.now() would produce a too large number (1E13), representing ms
+since a specific ephoc. Vicon does not tolerate package numbers higher than
+1E10. As a safety factor, I will only use 8 digits. Giving their meaning,
+I have a time buffer of 99999 seconds before having to re-instantiate a new
+ViconRemoteTrigger class. 99999 / 3600 = 27.8 hours of consecutive measures,
+that sounds very fair.
+*/
+function generateID() {
+    return parseInt(Date.now().toString().slice(-9));
+}
+
 
 
 function ViconRemoteTrigger(host, port) {
@@ -32,7 +49,7 @@ function ViconRemoteTrigger(host, port) {
     this.host = host || '127.0.0.1';
     this.port = port || 30;
     this.client = null;
-    this.packetID = 0;
+    this.packetID = generateID();
     this.filePath = null;
     this.fileName = null;
 
@@ -63,6 +80,12 @@ function ViconRemoteTrigger(host, port) {
     }
 
     this.setFileName = function(fileName) {
+        /* NOTE:
+        If this is set to an already existing file name, Nexus will disable
+        the "Start" capture button, at the moment of receiving the start
+        package, without capturing anything. Setting manualy the file name in
+        Nexus to a non-existing one will fix the problem. 
+        */
         this.fileName = fileName;
     }
 
