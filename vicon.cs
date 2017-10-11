@@ -99,7 +99,14 @@ public class Startup
             getFrameIfAvailable = (Func<object,Task<object>>)(
                 async (dynamic i) =>
                 {
-                    if( MyClient.GetFrame().Result == ViconDataStreamSDK.DotNET.Result.Success )
+                    // https://stackoverflow.com/questions/13513650/how-to-set-timeout-for-a-line-of-c-sharp-code
+                    Output_GetFrame Output;
+                    var task = Task.Run(() => MyClient.GetFrame());
+                    if (!task.Wait(TimeSpan.FromMilliseconds(50)))
+                      return false;
+                    else
+                      Output = task.Result;
+                    if( Output.Result == ViconDataStreamSDK.DotNET.Result.Success )
                     {
                         return true;
                     }
